@@ -6,6 +6,7 @@ from models.location import Location
 from models.review import Review
 from models.state import State
 from models.user import User
+from models.booking import Booking
 from models import storage
 from api.v1.views import app_views
 from flask import jsonify
@@ -20,8 +21,9 @@ def status():
 @app_views.route('/stats', methods=['GET'], strict_slashes=False)
 def number_objects():
     """ Retrieves the number of each objects by type """
-    classes = [Car, City, Location, Review, State, User]
-    names = ["cars", "cities", "locations", "reviews", "states", "users"]
+    classes = [Car, City, Location, Review, State, User, Booking]
+    names = ["cars", "cities", "locations", "reviews", "states", "users",
+             "bookings"]
 
     num_objs = {}
     for i in range(len(classes)):

@@ -13,10 +13,13 @@ class Review(BaseModel, Base):
         __tablename__ = 'reviews'
         car_id = Column(String(60), ForeignKey('cars.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
+        location_id = Column(String(60), ForeignKey('locations.id'),
+                             nullable=True)
         text = Column(String(1024), nullable=False)
     else:
         car_id = ""
         user_id = ""
+        location_id = ""
         text = ""
 
     def __init__(self, *args, **kwargs):

@@ -117,3 +117,66 @@ def put_location(location_id):
             setattr(location, key, value)
     storage.save()
     return make_response(jsonify(location.to_dict()), 200)
+
+
+@app_views.route('/locations_search', methods=['POST'], strict_slashes=False)
+@swag_from('documentation/location/post_search.yml', methods=['POST'])
+def locations_search():
+    """
+    Retrieves all Location objects depending of the JSON in the body
+    of the request
+    """
+
+    if request.get_json() is None:
+        abort(400, description="Not a JSON")
+
+    data = request.get_json()
+
+    if data and len(data):
+        states = data.get('states', None)
+        cities = data.get('cities', None)
+        cars = data.get('cars', None)
+
+    if not data or not len(data) or (
+            not states and
+            not cities and
+            not cars):
+        locations = storage.all(Location).values()
+        list_locations = []
+        for location in locations:
+            list_locations.append(location.to_dict())
+        return jsonify(list_locations)
+
+    list_locations = []
+    if states:
+        states_obj = [storage.get(State, s_id) for s_id in states]
+        for state in states_obj:
+            if state:
+                for city in state.cities:
+                    if city:
+                        for location in city.locations:
+                            list_locations.append(location)
+
+    if cities:
+        city_obj = [storage.get(City, c_id) for c_id in cities]
+        for city in city_obj:
+            if city:
+                for location in city.locations:
+                    if location not in list_locations:
+                        list_locations.append(location)
+
+    if cars:
+        if not list_locations:
+            list_locations = storage.all(Location).values()
+        cars_obj = [storage.get(Car, a_id) for a_id in cars]
+        list_locations = [location for location in list_locations
+                       if all([am in location.cars
+                               for am in cars_obj])]
+
+    locations = []
+    for p in list_locations:
+        d = p.to_dict()
+        d.pop('cars', None)
+        locations.append(d)
+
+    return jsonify(locations)

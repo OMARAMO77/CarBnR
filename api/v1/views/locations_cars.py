@@ -30,7 +30,7 @@ def get_location_cars(location_id):
 
 @app_views.route('/cars_search', methods=['POST'], strict_slashes=False)
 @swag_from('documentation/car/post_search.yml', methods=['POST'])
-def locations_search():
+def cars_search():
     """
     Retrieves all Car objects depending of the JSON in the body
     of the request

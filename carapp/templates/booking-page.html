@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/styles/booking-page.css">
+    <script src="../static/scripts/booking-page.js" defer></script>
+    <link rel="icon" href="../static/images/thumb.png" />
+    <title>CarBnR</title>
+</head>
+<body>
+    <div id="status"></div>
+
+    <h1>Car Booking</h1>
+
+    <form id="bookingForm" action="#" method="post">
+        <div class="form-left">
+            <img id="carImage" src="" alt="Car Image">
+            <div class="car_type">
+                <label for="car_type" style="width: -webkit-fill-available;">Car Type:</label>
+                <input type="text" id="car_type" name="car_type" readonly>
+            </div>
+            <div class="price_by_day">
+                <label for="price_by_day" style="width: -webkit-fill-available;">Price By Day:</label>
+                <input type="text" id="price_by_day" name="price_by_day" readonly>
+            </div>
+            <div class="locationName">
+                <label for="locationName" style="width: -webkit-fill-available;">Location:</label>
+                <input type="text" id="locationName" name="locationName" readonly>
+            </div>
+            <div class="locationAddress">
+                <label for="locationAddress" style="width: -webkit-fill-available;">Address:</label>
+                <input type="text" id="locationAddress" name="locationAddress" readonly>
+            </div>
+
+        </div>
+
+        <div class="right-side">
+            <p>Enter pickup and return dates to book the car:</p>
+            <label for="pickup_date">Pickup Date:</label>
+            <input type="date" id="pickup_date" name="pickup_date" min="" required>
+
+            <label for="return_date">Return Date:</label>
+            <input type="date" id="return_date" name="return_date" min="" required>
+
+            <label for="daysNumber">Number of Days:</label>
+            <input type="text" id="daysNumber" name="daysNumber" readonly>
+
+            <label for="total_cost">Total Cost:</label>
+            <input type="text" id="total_cost" name="total_cost" readonly>
+
+            <button type="button" id="confirmBookingBtn">Confirm Booking</button>
+        </div>
+    </form>
+</body>
+</html>

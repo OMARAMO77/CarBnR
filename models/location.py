@@ -16,9 +16,12 @@ class Location(BaseModel, Base):
         name = Column(String(128), nullable=False)
         address = Column(String(128), nullable=False)
         phone_number = Column(String(128), nullable=False)
-        cars = relationship("Car",
-                            backref="location",
+        cars = relationship("Car", backref="location",
                             cascade="all, delete, delete-orphan")
+        reviews = relationship("Review", backref="location",
+                               cascade="all, delete, delete-orphan")
+        bookings = relationship("Booking", backref="location",
+                                cascade="all, delete, delete-orphan")
     else:
         city_id = ""
         name = ""

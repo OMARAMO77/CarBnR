@@ -21,6 +21,8 @@ class User(BaseModel, Base):
         address = Column(String(128), nullable=True)
         phone_number = Column(String(128), nullable=True)
         reviews = relationship("Review", backref="user")
+        bookings = relationship("Booking", backref="user",
+                                cascade="all, delete, delete-orphan")
     else:
         email = ""
         password = ""

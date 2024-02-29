@@ -5,6 +5,7 @@ from models import storage
 from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from flasgger.utils import swag_from
+from hashlib import md5
 
 
 @app_views.route('/users', methods=['GET'], strict_slashes=False)
@@ -39,7 +40,6 @@ def delete_user(user_id):
     """
     Deletes a user Object
     """
-
     user = storage.get(User, user_id)
 
     if not user:
@@ -93,3 +93,27 @@ def put_user(user_id):
             setattr(user, key, value)
     storage.save()
     return make_response(jsonify(user.to_dict()), 200)
+
+
+@app_views.route('/login', methods=['POST'], strict_slashes=False)
+def login():
+    data = request.get_json()
+
+    if 'email' not in data or 'password' not in data:
+        return jsonify({"error": "Invalid request"}), 400
+
+    email = data['email']
+    password = data['password']
+
+    all_users = storage.all(User).values()
+    users = []
+    for user in all_users:
+        users.append(user.to_dictt())
+
+    user = next((u for u in users if u.get('email') == email), None)
+
+    hashed_password = md5(password.encode()).hexdigest()
+    if user and user.get('password') == hashed_password:
+        return jsonify({"userId": user['id']}), 200
+    else:
+        return jsonify({"error": "Invalid credentials"}), 401

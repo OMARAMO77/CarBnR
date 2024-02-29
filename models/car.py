@@ -23,6 +23,8 @@ class Car(BaseModel, Base):
         image_url = Column(String(1024), nullable=False)
         reviews = relationship("Review", backref="car",
                                cascade="all, delete, delete-orphan")
+        bookings = relationship("Booking", backref="car",
+                                cascade="all, delete, delete-orphan")
     else:
         location_id = ""
         brand = ""

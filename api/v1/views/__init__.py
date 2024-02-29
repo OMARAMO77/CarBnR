@@ -12,3 +12,4 @@ from api.v1.views.cities import *
 from api.v1.views.locations import *
 from api.v1.views.locations_cars import *
 from api.v1.views.users import *
+from api.v1.views.bookings import *

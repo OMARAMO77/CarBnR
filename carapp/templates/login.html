@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/styles/signup_form.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="../static/scripts/login_script.js"></script>
+    <title>CarBnR</title>
+</head>
+<body>
+    <div id="status"></div>
+    <form class="form" id="LogintoAccountForm" onsubmit="LogintoAccount()">
+        <p class="title">Log in</p>
+        <p class="message">Log in to be able to book a car. </p>
+            
+        <label>
+            <input class="input" type="email" id="email" placeholder=" " required="">
+            <span>Email</span>
+        </label> 
+
+        <label>
+            <input class="input" type="password" id="password" placeholder=" " required="">
+            <span>Password</span>
+        </label>
+        
+        <button class="submit" type="submit">Login</button>
+        <p class="signin">Don't have an account? <a id="signupLink" href="signup.html">Create one</a> </p>
+		
+    </form>
+    <script>
+      // Function to get URL parameters
+      function getURLParameter(name) {
+          const urlParams = new URLSearchParams(window.location.search);
+          return urlParams.get(name);
+      }
+
+      // Function to append parameters to the signup page URL
+      function updateSignupLink() {
+          const signupLink = document.getElementById("signupLink");
+          const carId = getURLParameter("carId");
+
+          if (carId) {
+              signupLink.href = `signup.html?carId=${carId}`;
+          }
+      }
+
+      // Call the function when the page loads
+      window.onload = updateSignupLink;
+    </script>
+
+</body>
+</html>
