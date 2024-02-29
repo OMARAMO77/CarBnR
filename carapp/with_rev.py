@@ -19,9 +19,9 @@ def close_db(error):
     storage.close()
 
 
-@app.route('/101-hbnb', strict_slashes=False)
-def hbnb():
-    """ HBNB is alive! """
+@app.route('/with_rev', strict_slashes=False)
+def with_rev():
+    """ carbnr is alive! """
     states = storage.all(State).values()
     states = sorted(states, key=lambda k: k.name)
     st_ct = []
@@ -35,7 +35,7 @@ def hbnb():
     locations = storage.all(Location).values()
     locations = sorted(locations, key=lambda k: k.name)
 
-    return render_template('101-hbnb.html',
+    return render_template('with_rev.html',
                            states=st_ct,
                            cars=cars,
                            locations=locations,
