@@ -5,6 +5,8 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../static/styles/booking-page.css">
+    <link rel="stylesheet" type="text/css" href="../static/styles/status.css">
+    <script src="../static/scripts/status-parameters.js" defer></script>
     <script src="../static/scripts/booking-page.js" defer></script>
     <link rel="icon" href="../static/images/thumb.png" />
     <title>CarBnR</title>
@@ -40,6 +42,9 @@
             <p>Enter pickup and return dates to book the car:</p>
             <label for="pickup_date">Pickup Date:</label>
             <input type="date" id="pickup_date" name="pickup_date" min="" required>
+
+            <label for="dateTime">Pickup Time:</label>
+            <input type="time" id="dateTime" name="dateTime" required>
 
             <label for="return_date">Return Date:</label>
             <input type="date" id="return_date" name="return_date" min="" required>

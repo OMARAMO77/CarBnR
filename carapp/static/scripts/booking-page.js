@@ -1,19 +1,13 @@
-const getParameterByName = (name, url) => {
-	if (!url) url = window.location.href;
-	name = name.replace(/[\[\]]/g, "\\$&");
-	const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-		results = regex.exec(url);
-	if (!results) return null;
-	if (!results[2]) return '';
-	return decodeURIComponent(results[2].replace(/\+/g, " "));
-};
-
 // Get car information from URL parameters
 const carId = getParameterByName('carId');
 const user_id = getParameterByName('userId');
+function isValidDate(dateString) {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
+    }
 
 $(document).ready(function() {
-    const HOST = '54.236.16.156';
+    const HOST = '100.25.201.32';
     const carApiUrl = `http://${HOST}/api/v1/cars/${carId}`;
 
     // Mocking the API call as an asynchronous operation
@@ -33,29 +27,16 @@ $(document).ready(function() {
                 const pickup_date = $("#pickup_date").val();
                 const return_date = $("#return_date").val();
 
-                // Check if pickup_date is greater than today's date
-                if (!pickup_date || !return_date) {
-                    updateStatus('Please enter both dates.', 'error');
-                    setTimeout(hideStatus, 3000);
-                    return;
-                }
-
-                if (pickup_date <= new Date()) {
-                    updateStatus('Pickup date must be greater than today\'s date.', 'error');
-                    setTimeout(hideStatus, 3000);
-                    return;
-                }
-
-                // Check if return_date is greater than pickup_date
-                if (return_date <= pickup_date) {
-                    updateStatus('Return date must be greater than pickup date.', 'error');
-                    setTimeout(hideStatus, 3000);
-                    return;
-                }
                 const daysBetween = calculateDaysBetween(new Date(pickup_date), new Date(return_date));
                 const total_cost = price_by_day * daysBetween;
-                $("#daysNumber").val(daysBetween);
-                $("#total_cost").val("$" + total_cost.toFixed(2));
+
+                if (daysBetween) {
+                    $("#total_cost").val("$" + total_cost.toFixed(2));
+                    $("#daysNumber").val(daysBetween);
+                } else {
+                    $("#total_cost").val("$0.00");
+                    $("#daysNumber").val("-");
+                }
             });
             function calculateDaysBetween(pickup_date, return_date) {
                 const oneDay = 24 * 60 * 60 * 1000;
@@ -89,21 +70,37 @@ $(document).ready(function() {
             // Add click event for the Confirm Booking button
             $("#confirmBookingBtn").on("click", function() {
                 const bookingApiUrl = `http://${HOST}/api/v1/cars/${carId}/bookings`;
-                const total_cost = $("#total_cost").val().split("$")[1].split(".")[0];
-                const price_by_day = $("#price_by_day").val().split("$")[1].split(".")[0];
                 const return_date = $("#return_date").val();
                 const pickup_date = $("#pickup_date").val();
+                const dateTime = $("#dateTime").val();
 
-                if (!pickup_date || !return_date) {
-                    updateStatus('Please enter both dates.', 'error');
+                if (!pickup_date) {
+                    updateStatus('Please enter pickup date.', 'error');
+                    setTimeout(hideStatus, 3000);
+                    return;
+                } else if (!return_date) {
+                    updateStatus('Please enter return date.', 'error');
+                    setTimeout(hideStatus, 3000);
+                    return;
+                } else if (!dateTime) {
+                    updateStatus('Please enter pickup time.', 'error');
                     setTimeout(hideStatus, 3000);
                     return;
                 }
 
+                const dateTime1 = new Date(pickup_date + "T" + dateTime + ":00").toISOString();
+                const dateTime2 = new Date(return_date + "T" + dateTime + ":00").toISOString();
+
+                if (!isValidDate(dateTime1) || !isValidDate(dateTime2)) {
+                  alert('Invalid date or time format.');
+                  return;
+                }
+                const total_cost = $("#total_cost").val().split("$")[1].split(".")[0];
+                const price_by_day = $("#price_by_day").val().split("$")[1].split(".")[0];
                 const bookingData = {
                     total_cost: total_cost,
-                    return_date: return_date,
-                    pickup_date: pickup_date,
+                    return_date: dateTime2.split(".000Z")[0],
+                    pickup_date: dateTime1.split(".000Z")[0],
                     price_by_day: price_by_day,
                     carId: carId,
                     user_id: user_id,
@@ -117,8 +114,11 @@ $(document).ready(function() {
                     contentType: "application/json",
                     data: JSON.stringify(bookingData),
                     success: function(response) {
-                        updateStatus('Booking confirmed! <br>your booking id: ' + response.bookingId, 'success');
-                        setTimeout(hideStatus, 8000);
+                        updateStatus('Booking confirmed! <br>your booking id: <br>' + response.bookingId, 'success');
+                        setTimeout(function () {
+                            hideStatus();
+                            window.location.href = 'user_bookings.html?userId=' + encodeURIComponent(user_id) + '&bookingId=' + response.bookingId;
+                        }, 3000);
                     },
                     error: function(error) {
                         updateStatus('Error confirming booking:', 'error');
@@ -141,15 +141,3 @@ $(document).ready(function() {
         $("#return_date").attr("min", $(this).val());
     });
 });
-
-
-function updateStatus(message, status) {
-    const statusElement = $('#status');
-    statusElement.html(message);
-    statusElement.attr('class', 'status-' + status);
-}
-
-function hideStatus() {
-    const statusElement = $('#status');
-    statusElement.html('');
-}

@@ -1,5 +1,5 @@
 $(document).ready(init);
-const HOST = '54.236.16.156';
+const HOST = '100.25.201.32';
 
 function init() {
     // Add event listener to the form submission
@@ -54,25 +54,3 @@ function LogintoAccount() {
     updateStatus('In progress...', 'info'); // Inform the user that the account creation is in progress
     return false; // Prevent form submission while the AJAX request is being processed
 }
-
-function updateStatus(message, status) {
-    const statusElement = $('#status');
-    statusElement.html(message);
-    statusElement.attr('class', 'status-' + status);
-}
-
-function hideStatus() {
-    const statusElement = $('#status');
-    statusElement.html('');
-}
-
- // Function to parse URL parameters
-const getParameterByName = (name, url) => {
-	if (!url) url = window.location.href;
-	name = name.replace(/[\[\]]/g, "\\$&");
-	const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-		results = regex.exec(url);
-	if (!results) return null;
-	if (!results[2]) return '';
-	return decodeURIComponent(results[2].replace(/\+/g, " "));
-};
